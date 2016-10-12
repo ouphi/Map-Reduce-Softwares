@@ -15,17 +15,18 @@ public class WordCount {
 
     public static class TokenizerMapper
             extends Mapper<Object, Text, Text, IntWritable>{
-
+        //value
         private final static IntWritable one = new IntWritable(1);
-        private Text word = new Text();
+        //line
+        private Text origin = new Text();
 
         public void map(Object key, Text value, Context context
         ) throws IOException, InterruptedException {
-            StringTokenizer itr = new StringTokenizer(value.toString());
-            while (itr.hasMoreTokens()) {
-                word.set(itr.nextToken());
-                context.write(word, one);
-            }
+            //StringTokenizer itr = new StringTokenizer(value.toString());
+            String[] parts = value.toString().split(";");
+                origin = new Text(parts[2]);
+                // origin.set(itr.nextToken());
+                context.write(origin, one);
         }
     }
 
