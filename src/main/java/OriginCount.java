@@ -11,7 +11,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-public class WordCount {
+public class OriginCount {
 
     public static class OriginMapper
             extends Mapper<Object, Text, Text, IntWritable>{
@@ -63,17 +63,18 @@ public class WordCount {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        //define input and output
-        Path input = new Path(args[0]);
-        Path output = new Path(args[1]);
+
         //count origin by name
         Job jobCountOrigin = Job.getInstance(conf, "count origin");
-        jobCountOrigin.setJarByClass(WordCount.class);
+        jobCountOrigin.setJarByClass(OriginCount.class);
         jobCountOrigin.setMapperClass(OriginMapper.class);
         jobCountOrigin.setCombinerClass(IntSumReducer.class);
         jobCountOrigin.setReducerClass(IntSumReducer.class);
         jobCountOrigin.setOutputKeyClass(Text.class);
         jobCountOrigin.setOutputValueClass(IntWritable.class);
+        //define input and output
+        Path input = new Path(args[0]);
+        Path output = new Path(args[1]);
         FileInputFormat.addInputPath(jobCountOrigin, input);
         FileOutputFormat.setOutputPath(jobCountOrigin, output);
         System.exit(jobCountOrigin.waitForCompletion(true) ? 0 : 1);

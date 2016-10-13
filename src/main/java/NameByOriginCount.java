@@ -2,8 +2,6 @@
  * Created by lementec on 13/10/2016.
  */
 import java.io.IOException;
-import java.util.StringTokenizer;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -60,7 +58,7 @@ public class NameByOriginCount{
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         //count origin by name
-        Job jobCountOrigin = Job.getInstance(conf, "count origin");
+        Job jobCountOrigin = Job.getInstance(conf, "count name by origin");
         jobCountOrigin.setJarByClass(OriginCount.class);
         jobCountOrigin.setMapperClass(NumberOfOriginbyLineMapper.class);
         jobCountOrigin.setCombinerClass(IntSumReducer.class);

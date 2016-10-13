@@ -2,17 +2,13 @@
  * Created by lementec on 13/10/2016.
  */
 import java.io.IOException;
+import java.util.StringTokenizer;
+
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapred.JobClient;
-import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.JobID;
-import org.apache.hadoop.mapred.RunningJob;
 import org.apache.hadoop.mapreduce.Cluster;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -47,12 +43,19 @@ public class ProportionMaleFemale{
             //nLine = context.getCounter("org.apache.hadoop.mapred.Task$Counter", "MAP_OUTPUT_RECORDS").getValue();
             //nLine = nLine + 1;
             String[] parts = value.toString().split(";");
-            //get gender in parts[1]
-            gender = new Text(parts[1]);
-            //increment the counter which represent number of line
-            context.getCounter(ProportionMaleFemale.nLine.n).increment(1);
-            //write in context : gender as key and 1 as value
-            context.write(gender, one);
+            //split into part separated by ,
+            StringTokenizer itr = new StringTokenizer(parts[1],",");
+            //for each gender we write key : gender and value : one
+            while (itr.hasMoreTokens()) {
+                //increment the counter which represent number of line
+                context.getCounter(ProportionMaleFemale.nLine.n).increment(1);
+                gender.set(itr.nextToken());
+                //write in context : gender as key and 1 as value
+                context.write(gender, one);
+            }
+
+
+
         }
     }
 
