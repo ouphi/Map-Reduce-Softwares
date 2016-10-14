@@ -36,7 +36,7 @@ public class OriginCount {
             * we will have :
             * itr.tokenNumber(0) = "french"
             * itr.tokenNumber(1) = "spanish"*/
-            StringTokenizer itr = new StringTokenizer(parts[2],",");
+            StringTokenizer itr = new StringTokenizer(parts[2].replaceAll("\\s+",""),",");
             //write each word (origin) in context
             while (itr.hasMoreTokens()) {
                 origin.set(itr.nextToken());
