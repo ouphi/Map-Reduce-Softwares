@@ -59,7 +59,8 @@ public class NameByOriginCount{
         Configuration conf = new Configuration();
         //count origin by name
         Job jobCountOrigin = Job.getInstance(conf, "count name by origin");
-        jobCountOrigin.setJarByClass(OriginCount.class);
+        // set jar by class
+        jobCountOrigin.setJarByClass(NameByOriginCount.class);
         jobCountOrigin.setMapperClass(NumberOfOriginbyLineMapper.class);
         jobCountOrigin.setCombinerClass(IntSumReducer.class);
         jobCountOrigin.setReducerClass(IntSumReducer.class);

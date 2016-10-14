@@ -18,12 +18,10 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class ProportionMaleFemale{
     //represent number of map output
-    public  enum nLine {n}
+    public enum nLine {n}
 
     public static class ProportionMaleFemaleMapper
             extends Mapper<Object, Text, Text, IntWritable>{
-        //number of line
-        public static long nLine = 0;
         //output value
         private final static IntWritable one = new IntWritable(1);
         //output key number of Origin in the line
@@ -82,6 +80,9 @@ public class ProportionMaleFemale{
         int mapperCounter = 0;
 
         //allow to get nLine.n (number of map output)
+        /*source :
+        * http://stackoverflow.com/questions/5450290/accessing-a-mappers-counter-from-a-reducer
+        * */
         @Override
         public void setup(Context context) throws IOException, InterruptedException{
             Configuration conf = context.getConfiguration();
@@ -116,17 +117,25 @@ public class ProportionMaleFemale{
 
         //count origin by name
         Job jobPropMaleFemale = Job.getInstance(conf, "proportion gender");
-        jobPropMaleFemale.setJarByClass(OriginCount.class);
+        // set jar by class
+        jobPropMaleFemale.setJarByClass(ProportionMaleFemale.class);
+        //mapper
         jobPropMaleFemale.setMapperClass(ProportionMaleFemaleMapper.class);
+        //combiner allow to reduce input for reducer
         jobPropMaleFemale.setCombinerClass(IntSumReducer.class);
+        //reducer
         jobPropMaleFemale.setReducerClass(PercentReducer.class);
+        //output key will be a Text
         jobPropMaleFemale.setOutputKeyClass(Text.class);
+        //output key will be a IntWritable
         jobPropMaleFemale.setOutputValueClass(IntWritable.class);
         //define input and output
         Path input = new Path(args[0]);
         Path output = new Path(args[1]);
+        //final input output
         FileInputFormat.addInputPath(jobPropMaleFemale, input);
         FileOutputFormat.setOutputPath(jobPropMaleFemale, output);
+        //when job finished exit
         System.exit(jobPropMaleFemale.waitForCompletion(true) ? 0 : 1);
     }
 }
