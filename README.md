@@ -5,3 +5,6 @@
 /usr/hdp/current/hadoop-client/bin/hadoop jar TP2.jar NameByOriginCount /res/prenoms.csv output
 -  Proportion (in%) of male or female :
 /usr/hdp/current/hadoop-client/bin/hadoop jar TP2.jar ProportionMaleFemale /res/prenoms.csv output
+
+
+Hive Queries : in hive_query.hql
