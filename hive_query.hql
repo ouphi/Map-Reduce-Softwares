@@ -23,10 +23,11 @@ stored as orc tblproperties ("orc.compress"="NONE");
 
 -- insert content of the table
 INSERT INTO TABLE population_clean
-SELECT firstname firstname,
-split(gender, ",") gender,
-split(origin, ",") origin,
-version version
+SELECT 
+if(firstname="",NULL,firstname) firstname,
+if(gender="",NULL,split(gender, ",")) gender,
+if(origin="",NULL,split(origin, ",")) origin,
+if(version="",NULL,version) version
 FROM population_csv;
 ---
 
@@ -51,8 +52,7 @@ FROM population_clean
 group by origin;
 
 -- Count number of first name by number of origin (how many first name has x origins ? For x = 1,2,3...)
-
-SELECT nb_origin, sum(1)
+SELECT concat('x=',nb_origin), sum(1) nb_name
 FROM
 (
 SELECT firstname, size(origin) nb_origin
@@ -61,15 +61,17 @@ FROM population_clean
 GROUP BY nb_origin
 
 -- Proportion (in%) of male or female
-SELECT sum(if(gender='f',1,0))/COUNT(*) female_proportion, sum(if(gender='m',1,0))/COUNT(*) male_proportion
-FROM
+SELECT gender, nb_gender*100/sum(nb_gender) over (partition by gender) as p 
+from
+(
+SELECT gender gender, COUNT(gender) nb_gender
+from
 (
 SELECT explode(gender) gender
 FROM population_clean
 ) nb_gender
-
-
-
+group by gender
+) gender_info
 
 
 
