@@ -47,7 +47,7 @@ FROM population_clean
 GROUP BY nb_origin;
 
 -- Proportion (in%) of male or female
-SELECT gender, nb_gender*100/sum(nb_gender) over (partition by gender) as p 
+SELECT gender, nb_gender*100/sum(nb_gender) over () as p 
 from
 (
 SELECT gender gender, COUNT(gender) nb_gender
